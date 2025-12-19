@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Search, BarChart2, Settings, LogOut, Zap, Menu, X, PenTool, Radar, CreditCard } from 'lucide-react';
+import { LayoutDashboard, Search, BarChart2, LogOut, Zap, Menu, X, PenTool, Radar, CreditCard, Globe } from 'lucide-react';
 import { UserProfile } from '../types';
+import { useTranslation } from '../context/LanguageContext';
 
 interface LayoutProps {
   user: UserProfile | null;
@@ -12,14 +13,15 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ user, onLogout }) => {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const { t, language, setLanguage } = useTranslation();
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'SEO Audit', path: '/audit', icon: Search },
-    { name: 'Keywords', path: '/keywords', icon: BarChart2 },
-    { name: 'AI Writer', path: '/writer', icon: PenTool },
-    { name: 'Rank Tracker', path: '/tracker', icon: Radar },
-    { name: 'Billing', path: '/billing', icon: CreditCard },
+    { name: t('nav.dashboard'), path: '/dashboard', icon: LayoutDashboard },
+    { name: t('nav.audit'), path: '/audit', icon: Search },
+    { name: t('nav.keywords'), path: '/keywords', icon: BarChart2 },
+    { name: t('nav.writer'), path: '/writer', icon: PenTool },
+    { name: t('nav.tracker'), path: '/tracker', icon: Radar },
+    { name: t('nav.billing'), path: '/billing', icon: CreditCard },
   ];
 
   return (
@@ -66,16 +68,36 @@ const Layout: React.FC<LayoutProps> = ({ user, onLogout }) => {
           </nav>
 
           <div className="p-6 border-t border-slate-800">
+            {/* Language Switcher */}
+            <div className="flex items-center justify-between mb-6 px-2">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Globe size={16} />
+                <span className="text-[10px] font-black uppercase tracking-widest">Language</span>
+              </div>
+              <div className="flex bg-slate-900 rounded-lg p-1 border border-slate-800">
+                <button 
+                  onClick={() => setLanguage('en')}
+                  className={`px-2 py-1 text-[10px] font-black rounded-md transition-all ${language === 'en' ? 'bg-indigo-600 text-white' : 'text-slate-500'}`}
+                >
+                  EN
+                </button>
+                <button 
+                  onClick={() => setLanguage('fr')}
+                  className={`px-2 py-1 text-[10px] font-black rounded-md transition-all ${language === 'fr' ? 'bg-indigo-600 text-white' : 'text-slate-500'}`}
+                >
+                  FR
+                </button>
+              </div>
+            </div>
+
             <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-4 mb-4">
               <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">Usage Credits</p>
               <div className="flex justify-between items-end mb-2">
-                {/* Fix: user?.creditsRemaining is an object, changed to show audits count */}
                 <p className="text-2xl font-bold text-white">{user?.creditsRemaining.audits}</p>
                 <p className="text-xs text-slate-500">/ 100 limit</p>
               </div>
               <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                {/* Fix: Access audits property for width calculation */}
-                <div className="bg-indigo-500 h-full rounded-full" style={{ width: `${(user?.creditsRemaining.audits || 0)}%` }}></div>
+                <div className="bg-indigo-500 h-full rounded-full transition-all duration-500" style={{ width: `${(user?.creditsRemaining.audits || 0)}%` }}></div>
               </div>
             </div>
             
@@ -84,7 +106,7 @@ const Layout: React.FC<LayoutProps> = ({ user, onLogout }) => {
               className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
             >
               <LogOut size={18} />
-              Sign Out
+              {t('nav.signout')}
             </button>
           </div>
         </div>
@@ -98,7 +120,7 @@ const Layout: React.FC<LayoutProps> = ({ user, onLogout }) => {
           <div className="flex items-center gap-4">
             <div className="hidden sm:block text-right">
               <p className="text-sm font-bold text-white leading-none">{user?.email}</p>
-              <p className="text-[10px] font-bold text-indigo-400 uppercase">{user?.plan} PRO</p>
+              <p className="text-[10px] font-bold text-indigo-400 uppercase">{user?.plan}</p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-500/20">
               {user?.email[0].toUpperCase()}
