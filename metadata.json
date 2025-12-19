@@ -1,0 +1,7 @@
+{
+  "name": "Pirabel SEO Suite",
+  "description": "A comprehensive SaaS platform for professional SEO auditing, keyword research, and rank tracking, powered by Gemini AI.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
